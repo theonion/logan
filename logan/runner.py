@@ -70,7 +70,7 @@ def configure_app(config_path=None, project=None, default_config_path=None,
     project_filename = sanitize_name(project)
 
     if default_config_path is None:
-        default_config_path = '~/%s/%s.conf.py' % (project_filename, project_filename)
+        default_config_path = '~/{}/{}.conf.py'.format(project_filename, project_filename)
 
     if settings_envvar is None:
         settings_envvar = project_filename.upper() + '_CONF'
@@ -91,8 +91,8 @@ def configure_app(config_path=None, project=None, default_config_path=None,
 
     if not os.path.exists(config_path):
         if runner_name:
-            raise ValueError("Configuration file does not exist. Use '%s init' to initialize the file." % (runner_name,))
-        raise ValueError("Configuration file does not exist at %r" % (config_path,))
+            raise ValueError("Configuration file does not exist. Use '{} init' to initialize the file.".format(runner_name))
+        raise ValueError("Configuration file does not exist at {!r}".format(config_path))
 
     os.environ['DJANGO_SETTINGS_MODULE'] = config_module_name
 
@@ -132,7 +132,7 @@ def run_app(**kwargs):
     args, command, command_args = parse_args(sys_args[1:])
 
     if not command:
-        print("usage: %s [--config=/path/to/settings.py] [command] [options]" % runner_name)
+        print("usage: {} [--config=/path/to/settings.py] [command] [options]".format(runner_name))
         sys.exit(1)
 
     default_config_path = kwargs.get('default_config_path')
@@ -150,7 +150,7 @@ def run_app(**kwargs):
         if os.path.exists(config_path):
             resp = None
             while resp not in ('Y', 'n'):
-                resp = raw_input('File already exists at %r, overwrite? [nY] ' % config_path)
+                resp = raw_input('File already exists at {r!}, overwrite? [nY] '.format(config_path))
                 if resp == 'n':
                     print("Aborted!")
                     return
@@ -158,9 +158,9 @@ def run_app(**kwargs):
         try:
             create_default_settings(config_path, settings_initializer)
         except OSError as e:
-            raise e.__class__('Unable to write default settings file to %r' % config_path)
+            raise e.__class__('Unable to write default settings file to {!r}'.format(config_path))
 
-        print("Configuration file created at %r" % config_path)
+        print("Configuration file created at {!r}".format(config_path))
 
         return
 
